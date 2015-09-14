@@ -18,7 +18,7 @@
 -- release_20141118のDBにカラムを追加するコマンド
 -- alter table questions add shown_in_exam tinyint(1) default 1;
 
-drop database javaep;
+drop database if exists javaep;
 
 create database javaep;
 use javaep;
