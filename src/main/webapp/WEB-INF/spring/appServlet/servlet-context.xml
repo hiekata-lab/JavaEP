@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing infrastructure -->
+	<resources mapping="/resources/**" location="/resources/" />
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources in the ${webappRoot}/resources directory -->
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory -->
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+
+	<context:component-scan base-package="jp.ac.u_tokyo.k.is" />
+
+    <beans:bean id="lobhandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" />
+
+    <beans:bean id="questionDao"
+        class="jp.ac.u_tokyo.k.is.dao.QuestionDaoImpl">
+        <beans:property name="dataSource" ref="dataSource" />
+    </beans:bean>
+
+    <beans:bean id="studentsStateDao"
+        class="jp.ac.u_tokyo.k.is.dao.StudentsStateDaoImpl">
+        <beans:property name="dataSource" ref="dataSource" />
+    </beans:bean>
+
+    <beans:bean id="userDao"
+        class="jp.ac.u_tokyo.k.is.dao.UserDaoImpl">
+        <beans:property name="dataSource" ref="dataSource" />
+    </beans:bean>
+
+    <beans:bean id="authorityDao"
+        class="jp.ac.u_tokyo.k.is.dao.AuthorityDaoImpl">
+        <beans:property name="dataSource" ref="dataSource" />
+    </beans:bean>
+
+    <beans:bean id="qandaDao"
+        class="jp.ac.u_tokyo.k.is.dao.QAndADaoImpl">
+        <beans:property name="dataSource" ref="dataSource" />
+    </beans:bean>
+
+
+    <beans:bean id="adminController"
+        class="jp.ac.u_tokyo.k.is.controller.AdminController">
+        <beans:property name="questionDao" ref="questionDao" />
+        <beans:property name="userDao" ref="userDao" />
+        <beans:property name="authorityDao" ref="authorityDao" />
+    </beans:bean>
+
+    <beans:bean id="settingController"
+        class="jp.ac.u_tokyo.k.is.controller.SettingController">
+    </beans:bean>
+
+    <beans:bean id="qandaController"
+        class="jp.ac.u_tokyo.k.is.controller.QandaController">
+        <beans:property name="qandaDao" ref="qandaDao" />
+        <beans:property name="questionDao" ref="questionDao" />
+    </beans:bean>
+
+    <beans:bean id="indexController"
+        class="jp.ac.u_tokyo.k.is.controller.IndexController">
+        <beans:property name="userDao" ref="userDao" />
+        <beans:property name="questionDao" ref="questionDao" />
+        <beans:property name="studentsStateDao" ref="studentsStateDao" />
+    </beans:bean>
+
+    <beans:bean id="questionController"
+        class="jp.ac.u_tokyo.k.is.controller.QuestionController"
+        init-method="init" destroy-method="destroy">
+        <beans:property name="userDao" ref="userDao" />
+        <beans:property name="questionDao" ref="questionDao" />
+        <beans:property name="studentsStateDao" ref="studentsStateDao" />
+        <beans:property name="qandaDao" ref="qandaDao" />
+    </beans:bean>
+
+    <!-- Configure the multipart resolver -->
+    <beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- one of the properties available; the maximum file size in bytes -->
+        <beans:property name="maxUploadSize" value="10000000"/>
+    </beans:bean>
+
+    <!-- MessageSource 中村　-->
+	<beans:bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<beans:property name="basenames">
+			<beans:list>
+				<beans:value>messages</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<view-controller path="/login" view-name="login" />
+
+	<beans:bean class="jp.ac.u_tokyo.k.is.handler.GlobalExceptionResolver"/>
+
+</beans:beans>
