@@ -48,10 +48,10 @@ public class AdminController {
 
 	@Autowired
 	private UserDao userDao;
-	
+
 	@Autowired
 	private AuthorityDao authorityDao;
-	
+
 	public void setQuestionDao(QuestionDao questionDao) {
 		this.questionDao = questionDao;
 	}
@@ -68,7 +68,7 @@ public class AdminController {
 	public String admin() throws Exception {
 		return "admin/admin";
 	}
-	
+
 	@RequestMapping(value = "/admin/users", method = RequestMethod.GET)
 	public String users() throws Exception {
 		return "admin/users";
@@ -114,7 +114,7 @@ public class AdminController {
 	 * @throws IllegalStateException
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/admin/users", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/generateUsers", method = RequestMethod.POST)
 	@ResponseBody
 	public void generateUsers(@RequestParam("file") MultipartFile file, HttpServletResponse resp) throws IllegalStateException, IOException {
 		List<User> usersList = UserGenerator.execute(file);
@@ -189,30 +189,30 @@ public class AdminController {
 
 		return "succeed";
 	}
-	
+
 	@RequestMapping(value = "/admin/showUsers", method = RequestMethod.GET)
 	@ResponseBody
 	public List<UserListRow> showUsers() throws Exception {
 		return userDao.findAllWithAuthority();
 	}
-	
+
 	@RequestMapping(value = "/admin/exportExamScore", method = RequestMethod.GET)
 	public void exportExamScore(HttpServletResponse response) throws Exception {
 		List<User> users = userDao.findAll();
-		
+
 		File tmpFile = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "exam_score.csv");
 		PrintWriter pw = new PrintWriter(new FileWriter(tmpFile));
-		
+
 		Date date = new Date();
 		pw.println(date.toString());
-		
+
 		pw.println("Question ID");
 		List<Question> questions = questionDao.findExamQuestions();
 		for (Question question : questions) {
 			pw.print(question.getId() + ",");
 		}
 		pw.println();
-		
+
 		pw.println("username,exam_score");
 		for (User user : users) {
 			pw.println(user.getUsername() + "," + user.getExamScore());
@@ -226,7 +226,7 @@ public class AdminController {
 		response.setContentType("csv");
 		response.setContentLength(data.length);
 		response.setHeader("Content-Disposition", "attachment; filename=\"exam_score.csv\"");
-		
+
 		try {
 			response.getOutputStream().write(data);
 		} catch (IOException e) {
