@@ -19,10 +19,10 @@
 -- alter table questions add shown_in_exam tinyint(1) default 1;
 
 -- release_20150925のDBにカラムを追加するコマンド
--- ALTER TABLE student_status ADD `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
--- ALTER TABLE student_status ADD `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
--- ALTER TABLE student_status_exam ADD `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
--- ALTER TABLE student_status_exam ADD `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- ALTER TABLE students_status ADD `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+-- ALTER TABLE students_status ADD `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- ALTER TABLE students_status_exam ADD `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+-- ALTER TABLE students_status_exam ADD `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 -- CREATE TABLE `students_status_exam_log` (
 --   `username` varchar(50) NOT NULL,
 --   `question_id` smallint(3) unsigned NOT NULL,
