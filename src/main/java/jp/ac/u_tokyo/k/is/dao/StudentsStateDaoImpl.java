@@ -28,7 +28,9 @@ public class StudentsStateDaoImpl implements StudentsStateDao {
 
 	public void create(String username, int questionId, String source, boolean passed) {
 		String sql = "insert into " + tableName + " (username, question_id, source, passed) values (?, ?, ?, ?)";
+		String sql_for_log = "insert into " + tableName + "_log (username, question_id, source, passed) values (?, ?, ?, ?)";
 		jdbcTemplate.update(sql, username, questionId, source, passed);
+		jdbcTemplate.update(sql_for_log, username, questionId, source, passed);
 	}
 
 	public StudentsState find(String username, int questionId) {
@@ -55,10 +57,13 @@ public class StudentsStateDaoImpl implements StudentsStateDao {
 
 	public void update(String username, int questionId, String source, boolean passed) {
 		String sql = "update " + tableName + " set source = ?, passed = ? where username = ? and question_id = ?";
-
+		String sql_for_log = "insert into " + tableName + "_log (username, question_id, source, passed) values (?, ?, ?, ?)";
+		
 		byte flag = (byte)(passed ? 1 : 0);
 		jdbcTemplate.update(sql, source, flag, username, questionId);
+		jdbcTemplate.update(sql_for_log, username, questionId, source, flag);
 	}
+
 
 	public void delete(String username, int questionId) {
 		String sql = "delete from " + tableName + " where username = ? and question_id = ?";

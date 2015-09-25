@@ -265,6 +265,22 @@ public class QuestionController {
 					}
 				}
 			}
+		} else {
+			StudentsState state = studentsStateDao.find(username, questionId);
+			String mode = javaepProperties.getProperty("javaep.mode");
+
+			if (state == null) {
+				studentsStateDao.create(username, questionId, source, false);
+			} else {
+				studentsStateDao.update(username, questionId, source, false);
+				if (state.getPassed()) {
+					if (mode.equals("exam")) {
+						userDao.subExamScore(username, q.getDifficulty());
+					} else {
+						userDao.subScore(username, q.getDifficulty());
+					}
+				}
+			}
 		}
 
 		responseMap.put("success", success);

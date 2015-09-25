@@ -38,6 +38,16 @@ public class UserDaoImpl implements UserDao {
 		String sql = "update users set exam_score = exam_score + ? where username = ?";
 		jdbcTemplate.update(sql, examScore, username);
 	}
+	
+	public void subScore(String username, int score) {
+		String sql = "update users set score = score - ? where username = ?";
+		jdbcTemplate.update(sql, score, username);
+	}
+	
+	public void subExamScore(String username, int examScore) {
+		String sql = "update users set exam_score = exam_score - ? where username = ?";
+		jdbcTemplate.update(sql, examScore, username);
+	}
 
 	public int[] getHigherRank(int num) {
 		String sql = "select * from users order by score desc limit ?";
