@@ -50,7 +50,8 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	public int[] getHigherRank(int num) {
-		String sql = "select * from users order by score desc limit ?";
+		String sql = "select users.username, users.password, users.score, users.exam_score, users.enabled from users "
+					+ "left join authorities on users.username = authorities.username where authorities.authority = 'ROLE_USER' order by users.score desc limit ?";
 		List<User> users = jdbcTemplate.query(sql, new UserMapper(), num);
 
 		int[] result = new int[num];
@@ -66,7 +67,8 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	public int[] getExamHigherRank(int num) {
-		String sql = "select * from users order by exam_score desc limit ?";
+		String sql = "select users.username, users.password, users.score, users.exam_score, users.enabled from users "
+					+ "left join authorities on users.username = authorities.username where authorities.authority = 'ROLE_USER' order by exam_score desc limit ?";
 		List<User> users = jdbcTemplate.query(sql, new UserMapper(), num);
 
 		int[] result = new int[num];
