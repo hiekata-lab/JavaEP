@@ -42,6 +42,20 @@
 --   CONSTRAINT `students_status_log_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
 -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- release_20151001のDBにカラムを追加するコマンド
+-- ALTER TABLE `students_status` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status_log` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status_exam` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status_exam_log` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status_log` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status_exam` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status_exam_log` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status` ADD INDEX `action`(`action`);
+-- ALTER TABLE `students_status_log` ADD INDEX `action`(`action`);
+-- ALTER TABLE `students_status_exam` ADD INDEX `action`(`action`);
+-- ALTER TABLE `students_status_exam_log` ADD INDEX `action`(`action`);
+
 
 
 drop database if exists javaep;
@@ -84,11 +98,14 @@ CREATE TABLE `students_status` (
   `username` varchar(50) NOT NULL,
   `question_id` smallint(3) unsigned NOT NULL,
   `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
   `passed` tinyint(1) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`username`,`question_id`),
   KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
   CONSTRAINT `students_status_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`),
   CONSTRAINT `students_status_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -97,11 +114,14 @@ CREATE TABLE `students_status_exam` (
   `username` varchar(50) NOT NULL,
   `question_id` smallint(3) unsigned NOT NULL,
   `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
   `passed` tinyint(1) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`username`,`question_id`),
   KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
   CONSTRAINT `students_status_exam_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`),
   CONSTRAINT `students_status_exam_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -110,9 +130,12 @@ CREATE TABLE `students_status_log` (
   `username` varchar(50) NOT NULL,
   `question_id` smallint(3) unsigned NOT NULL,
   `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
   `passed` tinyint(1) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
   CONSTRAINT `students_status_log_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -120,9 +143,12 @@ CREATE TABLE `students_status_exam_log` (
   `username` varchar(50) NOT NULL,
   `question_id` smallint(3) unsigned NOT NULL,
   `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
   `passed` tinyint(1) NOT NULL,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
   CONSTRAINT `students_status_exam_log_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

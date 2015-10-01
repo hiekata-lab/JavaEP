@@ -167,9 +167,9 @@ public class QuestionController {
 		StudentsState state = studentsStateDao.find(username, questionId);
 
 		if (state == null) {
-			studentsStateDao.create(username, questionId, source, false);
+			studentsStateDao.create(username, questionId, source, "", "save", false);
 		} else {
-			studentsStateDao.update(username, questionId, source, state.getPassed());
+			studentsStateDao.update(username, questionId, source, "", "save", state.getPassed());
 		}
 
 		return "question/question";
@@ -189,7 +189,16 @@ public class QuestionController {
 
 		Compiler compiler = new Compiler(userDir.getPath());
 		boolean success = compiler.compile(classname, source);
+		
+		StudentsState state = studentsStateDao.find(username, questionId);
 
+		if (state == null) {
+			studentsStateDao.createOnlyLog(username, questionId, source, compiler.getMessage(), "compile", false);
+
+		} else {
+			studentsStateDao.createOnlyLog(username, questionId, source, compiler.getMessage(), "compile", state.getPassed());
+		}
+		
 		Map<String, Object> responseMap = new HashMap<String, Object>();
 		responseMap.put("success", success);
 		responseMap.put("message", compiler.getMessage());
@@ -248,7 +257,7 @@ public class QuestionController {
 			String mode = javaepProperties.getProperty("javaep.mode");
 
 			if (state == null) {
-				studentsStateDao.create(username, questionId, source, true);
+				studentsStateDao.create(username, questionId, source, marker.getMessage(), "mark", true);
 
 				if (mode.equals("exam")) {
 					userDao.addExamScore(username, q.getDifficulty());
@@ -256,7 +265,7 @@ public class QuestionController {
 					userDao.addScore(username, q.getDifficulty());
 				}
 			} else {
-				studentsStateDao.update(username, questionId, source, true);
+				studentsStateDao.update(username, questionId, source, marker.getMessage(), "mark", true);
 				if (!state.getPassed()) {
 					if (mode.equals("exam")) {
 						userDao.addExamScore(username, q.getDifficulty());
@@ -270,9 +279,9 @@ public class QuestionController {
 			String mode = javaepProperties.getProperty("javaep.mode");
 
 			if (state == null) {
-				studentsStateDao.create(username, questionId, source, false);
+				studentsStateDao.create(username, questionId, source, marker.getMessage(), "mark", false);
 			} else {
-				studentsStateDao.update(username, questionId, source, false);
+				studentsStateDao.update(username, questionId, source, marker.getMessage(), "mark", false);
 				if (state.getPassed()) {
 					if (mode.equals("exam")) {
 						userDao.subExamScore(username, q.getDifficulty());
