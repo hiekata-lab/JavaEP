@@ -184,20 +184,34 @@ function makeOopTemplate(id, className) {
 		+ "}";
 }
 
-/*
- * arrayをシャッフルするメソッド
- * <param> {Array} : array, [{Object}]</param>
- * <return> {Array} : array, shuffled.</return>
- */
-function shuffle(array) {
-	var n = array.length, t, i;
+// arrayをseedStrに従ってシャッフル
+// seedStrが英数字の場合英字を除去
+// seedStrが数値に変換できない場合はシャッフルしないで返却
+function shuffle(array, seedStr) {
+	var seed = Number(seedStr);
+	var copied = [].concat(array);
 
-	while (n) {
-		i = Math.floor(Math.random() * n--);
-		t = array[n];
-		array[n] = array[i];
-		array[i] = t;
+	if(seedStr.match(/\d/g)){
+		seed = seedStr.match(/\d/g).join("");
 	}
 
-	return array;
+	if (isNaN(seed)) {
+		return array;
+	}
+
+	var ret = [];
+	var keys = [];
+
+	for (var i = 1; i <= copied.length; i++) {
+		keys[i - 1] = i;
+	}
+
+	while (keys.length > 0) {
+		var idx = seed % keys.length;
+		ret.push(copied[idx]);
+		copied.splice(idx, 1);
+		keys.splice(idx, 1);
+	}
+
+	return ret;
 }

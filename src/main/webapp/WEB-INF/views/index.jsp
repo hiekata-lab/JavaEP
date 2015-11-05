@@ -105,7 +105,7 @@
 		// 問題一覧情報の取得
 		$.get(path, function(data) {
 			var total = 0;
-			data = shuffle(data);
+			data = shuffle(data, username);
 
 			for (var i in data) {
 				var question = data[i];
