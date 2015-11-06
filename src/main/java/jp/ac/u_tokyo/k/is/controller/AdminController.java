@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,14 +20,19 @@ import javax.servlet.http.HttpServletResponse;
 import jp.ac.u_tokyo.k.is.dao.AuthorityDao;
 import jp.ac.u_tokyo.k.is.dao.QuestionDao;
 import jp.ac.u_tokyo.k.is.dao.UserDao;
+import jp.ac.u_tokyo.k.is.dao.StudentsStateDao;
 import jp.ac.u_tokyo.k.is.data.Question;
+import jp.ac.u_tokyo.k.is.data.StudentsState;
 import jp.ac.u_tokyo.k.is.data.User;
 import jp.ac.u_tokyo.k.is.data.UserListRow;
+import jp.ac.u_tokyo.k.is.logic.Marker;
 import jp.ac.u_tokyo.k.is.logic.QuestionGenerator;
 import jp.ac.u_tokyo.k.is.logic.UserGenerator;
 import jp.ac.u_tokyo.k.is.logic.Util;
 
+import org.apache.lucene.analysis.reverse.ReverseStringFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,6 +53,9 @@ public class AdminController {
 	private QuestionDao questionDao;
 
 	@Autowired
+	private StudentsStateDao studentsStateDao;
+
+	@Autowired
 	private UserDao userDao;
 	
 	@Autowired
@@ -61,7 +70,11 @@ public class AdminController {
 	}
 
 	public void setAuthorityDao(AuthorityDao authorityDao) {
-		this.authorityDao= authorityDao;
+		this.authorityDao = authorityDao;
+	}
+	
+	public void setStuendtStateDao(StudentsStateDao studentsStateDao) {
+		this.studentsStateDao = studentsStateDao;
 	}
 
 	@RequestMapping(value = "/admin", method = RequestMethod.GET)
@@ -235,4 +248,89 @@ public class AdminController {
 
 		tmpFile.delete();
 	}
+	
+	// TODO : 採点部分のリファクタリング
+	/**
+	 * 自動採点
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/admin/markAll", method = RequestMethod.POST)
+	@ResponseBody
+	public String markAll() throws Exception {
+		List<UserListRow> users = userDao.findAllWithAuthority();
+		Boolean successFlg = true;
+		for (UserListRow user : users) {
+			if (user.getAuthority().equals("ROLE_ADMIN")) continue;
+			List<StudentsState> states = studentsStateDao.findExamDataByUsername(user.getUsername());
+			for (StudentsState state : states) {
+				
+				// Start Mark
+				Question q = questionDao.findById(state.getQuestionId());
+				if (q == null) {
+					successFlg = false;
+				}
+
+				String webinfDir = servletContext.getRealPath("/WEB-INF");
+				File classesDir = new File(webinfDir, "users");
+				Util.mkdir(classesDir);
+
+				File userDir = new File(classesDir.getPath(), user.getUsername());
+				Util.mkdir(userDir);
+
+				File javaPolicy = new File(webinfDir, "conf/java.policy");
+
+				String[] args = Util.parseJsonToArray(q.getArgs());
+				String[] answers = Util.parseJsonToArray(q.getAnswers());
+
+				if (args.length != answers.length) {
+					successFlg = false;
+				}
+
+				for (int i = 0; i < args.length; i++) {
+					args[i] = args[i].trim();
+					answers[i] = answers[i].trim();
+				}
+
+				Marker marker = new Marker(userDir.getPath());
+				boolean success;
+				String classname = "Question" + state.getQuestionId();
+				String username = state.getUsername();
+				int questionId = state.getQuestionId();
+				String source = state.getSource();
+				if (q.getObjectOriented()) {
+					success = marker.mark(classname, source, args, answers, javaPolicy.getPath(), q.getClassName());
+				} else {
+					success = marker.mark(classname, source, args, answers, javaPolicy.getPath());
+				}
+
+				if (success) {
+					studentsStateDao.updateExam(username, questionId, source, marker.getMessage(), "admin", true);
+					if (!state.getPassed()) {
+						userDao.addExamScore(username, q.getDifficulty());
+					}
+				} else {
+					studentsStateDao.updateExam(username, questionId, source, marker.getMessage(), "admin", false);
+				}
+				// End Mark
+			}
+		}
+		if (!successFlg) {
+			return "fail";
+		}
+		return "secceed";
+	}
+	
+	/**
+	 * 点数計算
+	 * @return String
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/admin/calcExamScore", method = RequestMethod.POST)
+	@ResponseBody
+	public String calcExamScore() throws Exception {
+		userDao.calcExamScore();
+		return "succeed";
+	}
+	
 }
