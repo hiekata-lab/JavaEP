@@ -114,10 +114,10 @@
 				<div class="thumbnail">
 					<div class="caption">
 						<h3>自動採点</h3>
-						<p>
-							<button type="button" class="btn btn-info" onclick="markAll()">採点</button>
+						<p id="auto_mark">
+							<button type="button" class="btn btn-info auto_mark_buttons" onclick="markAll()">採点</button>
 							&nbsp;
-							<button type="button" class="btn btn-danger" onclick="calcExamScore()">テスト点数再計算</button>
+							<button type="button" class="btn btn-danger auto_mark_buttons" onclick="calcExamScore()">テスト点数再計算</button>
 						</p>
 					</div>
 				</div>
@@ -197,10 +197,14 @@
 	
 	// 自動採点
 	function markAll(){
-			$.ajax({
+		$(".auto_mark_buttons").prop("disabled", true);
+		$("#auto_mark").append("<p class=\"mark_processing\" style=\"margin-top:1em;\"><img src=\"resources/images/processing.gif\">&nbsp;採点中</p>");
+		$.ajax({
 			type: "POST",
 			url: "admin/markAll",
 			success: function(data) {
+				$(".mark_processing").remove();
+				$(".auto_mark_buttons").prop("disabled", false);
 				alert(data);
 			}
 		});
@@ -208,10 +212,14 @@
 	
 	// テスト点数再計算
 	function calcExamScore(){
-			$.ajax({
+		$(".auto_mark_buttons").prop("disabled", true);
+		$("#auto_mark").append("<p class=\"mark_processing\" style=\"margin-top:1em;\"><img src=\"resources/images/processing.gif\">&nbsp;再計算中</p>");
+		$.ajax({
 			type: "POST",
 			url: "admin/calcExamScore",
 			success: function(data) {
+				$(".mark_processing").remove();
+				$(".auto_mark_buttons").prop("disabled", false);
 				alert(data);
 			}
 		});
