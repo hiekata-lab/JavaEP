@@ -340,22 +340,25 @@
 		$("#console").text("Please wait a moment...");
 		disableButtons();
 
-		$.post("question/mark", { questionId: questionId, classname: classname, source: source }, function(data) {
-			$("#console").empty();
-			$("#console").append(data.message);
+		setTimeout(function (){
+			$.post("question/mark", { questionId: questionId, classname: classname, source: source }, function(data) {
+				$("#console").empty();
+				$("#console").append(data.message);
 
-			if(data.message == "Passed." && askedFlag){
-				$.magnificPopup.open({
-		            items: {
-		                src: '#dialog',
-		                type: 'inline'
-		            }
-		        });
-			}
+				if(data.message == "Passed." && askedFlag){
+					$.magnificPopup.open({
+			            items: {
+			                src: '#dialog',
+			                type: 'inline'
+			            }
+			        });
+				}
 
-			enableButtons();
-		});
+				enableButtons();
+			});
+		},3000 * Math.random());
 	}
+
 
 	function disableButtons() {
 		$("#execute_btn").addClass("disabled");
