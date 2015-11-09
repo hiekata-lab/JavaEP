@@ -13,7 +13,9 @@ public interface StudentsStateDao {
 	void createOnlyLog(String username, int questionId, String source, String result, String action, boolean passed);
 	StudentsState find(String username, int questionId);
 	List<StudentsState> findByUsername(String username);
+	List<StudentsState> findExamDataByUsername(String username);
 	int getNumOfPassed(int questionId);
 	void update(String username, int questionId, String source, String result, String action, boolean passed);
+	void updateExam(String username, int questionId, String source, String result, String action, boolean passed);
 	void delete(String username, int questionId);
 }

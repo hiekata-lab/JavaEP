@@ -108,4 +108,15 @@ public class UserDaoImpl implements UserDao {
 		String sql = "delete from users";
 		jdbcTemplate.update(sql);
 	}
+	
+	public void calcExamScore() {
+		String sql = "update users as t1,"
+				+ " (select tt1.username as username, sum(tt2.difficulty) as s from students_status_exam as tt1"
+				+ " left join questions as tt2 on tt1.question_id = tt2.id"
+				+ " where tt1.passed = 1"
+				+ " group by tt1.username" 
+				+ ") as t2"
+				+ " set t1.exam_score = t2.s where t1.username = t2.username;";
+		jdbcTemplate.update(sql);
+	}
 }

@@ -21,4 +21,5 @@ public interface UserDao {
 	boolean checkExistByUsername(String username);
 	void updatePassword(String username, String password);
 	void deleteAll();
+	void calcExamScore();
 }
