@@ -127,7 +127,7 @@ public class AdminController {
 	 * @throws IllegalStateException
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/admin/users", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/generateUsers", method = RequestMethod.POST)
 	@ResponseBody
 	public void generateUsers(@RequestParam("file") MultipartFile file, HttpServletResponse resp) throws IllegalStateException, IOException {
 		List<User> usersList = UserGenerator.execute(file);
