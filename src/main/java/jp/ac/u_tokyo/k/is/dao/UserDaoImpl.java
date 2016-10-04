@@ -38,9 +38,20 @@ public class UserDaoImpl implements UserDao {
 		String sql = "update users set exam_score = exam_score + ? where username = ?";
 		jdbcTemplate.update(sql, examScore, username);
 	}
+	
+	public void subScore(String username, int score) {
+		String sql = "update users set score = score - ? where username = ?";
+		jdbcTemplate.update(sql, score, username);
+	}
+	
+	public void subExamScore(String username, int examScore) {
+		String sql = "update users set exam_score = exam_score - ? where username = ?";
+		jdbcTemplate.update(sql, examScore, username);
+	}
 
 	public int[] getHigherRank(int num) {
-		String sql = "select * from users order by score desc limit ?";
+		String sql = "select users.username, users.password, users.score, users.exam_score, users.enabled from users "
+					+ "left join authorities on users.username = authorities.username where authorities.authority = 'ROLE_USER' order by users.score desc limit ?";
 		List<User> users = jdbcTemplate.query(sql, new UserMapper(), num);
 
 		int[] result = new int[num];
@@ -56,7 +67,8 @@ public class UserDaoImpl implements UserDao {
 	}
 	
 	public int[] getExamHigherRank(int num) {
-		String sql = "select * from users order by exam_score desc limit ?";
+		String sql = "select users.username, users.password, users.score, users.exam_score, users.enabled from users "
+					+ "left join authorities on users.username = authorities.username where authorities.authority = 'ROLE_USER' order by exam_score desc limit ?";
 		List<User> users = jdbcTemplate.query(sql, new UserMapper(), num);
 
 		int[] result = new int[num];
@@ -94,6 +106,17 @@ public class UserDaoImpl implements UserDao {
 
 	public void deleteAll() {
 		String sql = "delete from users";
+		jdbcTemplate.update(sql);
+	}
+	
+	public void calcExamScore() {
+		String sql = "update users as t1,"
+				+ " (select tt1.username as username, sum(tt2.difficulty) as s from students_status_exam as tt1"
+				+ " left join questions as tt2 on tt1.question_id = tt2.id"
+				+ " where tt1.passed = 1"
+				+ " group by tt1.username" 
+				+ ") as t2"
+				+ " set t1.exam_score = t2.s where t1.username = t2.username;";
 		jdbcTemplate.update(sql);
 	}
 }

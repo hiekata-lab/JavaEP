@@ -13,10 +13,13 @@ public interface UserDao {
 	List<UserListRow> findAllWithAuthority();
 	void addScore(String username, int score);
 	void addExamScore(String username, int examScore);
+	void subScore(String username, int score);
+	void subExamScore(String username, int examScore);
 	int[] getHigherRank(int num);
 	int[] getExamHigherRank(int num);
 	void create(String username, String password);
 	boolean checkExistByUsername(String username);
 	void updatePassword(String username, String password);
 	void deleteAll();
+	void calcExamScore();
 }

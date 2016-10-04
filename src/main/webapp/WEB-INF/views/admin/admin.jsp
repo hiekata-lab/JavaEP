@@ -108,8 +108,23 @@
 				</div>
   			</div>
 		</div>
+	
+		<div class="row">
+  			<div class="col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<div class="caption">
+						<h3>自動採点</h3>
+						<p id="auto_mark">
+							<button type="button" class="btn btn-info auto_mark_buttons" onclick="markAll()">採点</button>
+							&nbsp;
+							<button type="button" class="btn btn-danger auto_mark_buttons" onclick="calcExamScore()">テスト点数再計算</button>
+						</p>
+					</div>
+				</div>
+  			</div>
+  		</div>
 	</div>
-
+	
 	<c:import url="/WEB-INF/views/include/footer.jsp"></c:import>
 
 	<script src="<c:url value='/resources/js/jquery.1.11.1.min.js'/>"></script>
@@ -175,6 +190,36 @@
 			url: "admin/set",
 			data: { username : username, password : password, authority : authority },
 			success: function(data) {
+				alert(data);
+			}
+		});
+	};
+	
+	// 自動採点
+	function markAll(){
+		$(".auto_mark_buttons").prop("disabled", true);
+		$("#auto_mark").append("<p class=\"mark_processing\" style=\"margin-top:1em;\"><img src=\"resources/images/processing.gif\">&nbsp;採点中</p>");
+		$.ajax({
+			type: "POST",
+			url: "admin/markAll",
+			success: function(data) {
+				$(".mark_processing").remove();
+				$(".auto_mark_buttons").prop("disabled", false);
+				alert(data);
+			}
+		});
+	};
+	
+	// テスト点数再計算
+	function calcExamScore(){
+		$(".auto_mark_buttons").prop("disabled", true);
+		$("#auto_mark").append("<p class=\"mark_processing\" style=\"margin-top:1em;\"><img src=\"resources/images/processing.gif\">&nbsp;再計算中</p>");
+		$.ajax({
+			type: "POST",
+			url: "admin/calcExamScore",
+			success: function(data) {
+				$(".mark_processing").remove();
+				$(".auto_mark_buttons").prop("disabled", false);
 				alert(data);
 			}
 		});

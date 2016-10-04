@@ -185,10 +185,15 @@ function makeOopTemplate(id, className) {
 }
 
 // arrayをseedStrに従ってシャッフル
+// seedStrが英数字の場合英字を除去
 // seedStrが数値に変換できない場合はシャッフルしないで返却
 function shuffle(array, seedStr) {
 	var seed = Number(seedStr);
 	var copied = [].concat(array);
+
+	if(seedStr.match(/\d/g)){
+		seed = seedStr.match(/\d/g).join("");
+	}
 
 	if (isNaN(seed)) {
 		return array;

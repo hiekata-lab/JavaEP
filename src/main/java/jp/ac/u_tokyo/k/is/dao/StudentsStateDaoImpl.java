@@ -26,9 +26,16 @@ public class StudentsStateDaoImpl implements StudentsStateDao {
 		}
 	}
 
-	public void create(String username, int questionId, String source, boolean passed) {
-		String sql = "insert into " + tableName + " (username, question_id, source, passed) values (?, ?, ?, ?)";
-		jdbcTemplate.update(sql, username, questionId, source, passed);
+	public void create(String username, int questionId, String source, String result, String action, boolean passed) {
+		String sql = "insert into " + tableName + " (username, question_id, source, result, action, passed) values (?, ?, ?, ?, ?, ?)";
+		String sql_for_log = "insert into " + tableName + "_log (username, question_id, source, result, action, passed) values (?, ?, ?, ?, ?, ?)";
+		jdbcTemplate.update(sql, username, questionId, source, result, action, passed);
+		jdbcTemplate.update(sql_for_log, username, questionId, source, result, action, passed);
+	}
+	
+	public void createOnlyLog(String username, int questionId, String source, String result, String action, boolean passed) {
+		String sql_for_log = "insert into " + tableName + "_log (username, question_id, source, result, action, passed) values (?, ?, ?, ?, ?, ?)";
+		jdbcTemplate.update(sql_for_log, username, questionId, source, result, action, passed);
 	}
 
 	public StudentsState find(String username, int questionId) {
@@ -47,17 +54,31 @@ public class StudentsStateDaoImpl implements StudentsStateDao {
 		return jdbcTemplate.query(sql, new StudentsStateMapper(), username);
 	}
 	
+	public List<StudentsState> findExamDataByUsername(String username) {
+		String sql = "select * from students_status_exam where username = ?";
+		return jdbcTemplate.query(sql, new StudentsStateMapper(), username);
+	}
+	
 	public int getNumOfPassed(int questionId) {
 		String sql = "select * from " + tableName + " where question_id = ? and passed = 1";
 		List<StudentsState> status = jdbcTemplate.query(sql, new StudentsStateMapper(), questionId);
 		return status.size();
 	}
 
-	public void update(String username, int questionId, String source, boolean passed) {
-		String sql = "update " + tableName + " set source = ?, passed = ? where username = ? and question_id = ?";
-
+	public void update(String username, int questionId, String source, String result, String action, boolean passed) {
+		String sql = "update " + tableName + " set source = ?, result = ?, action = ?, passed = ? where username = ? and question_id = ?";
+		String sql_for_log = "insert into " + tableName + "_log (username, question_id, source, result, action, passed) values (?, ?, ?, ?, ?, ?)";
+		
 		byte flag = (byte)(passed ? 1 : 0);
-		jdbcTemplate.update(sql, source, flag, username, questionId);
+		jdbcTemplate.update(sql, source, result, action, flag, username, questionId);
+		jdbcTemplate.update(sql_for_log, username, questionId, source, result, action, flag);
+	}
+
+	public void updateExam(String username, int questionId, String source, String result, String action, boolean passed) {
+		String sql = "update students_status_exam set source = ?, result = ?, action = ?, passed = ? where username = ? and question_id = ?";
+		
+		byte flag = (byte)(passed ? 1 : 0);
+		jdbcTemplate.update(sql, source, result, action, flag, username, questionId);
 	}
 
 	public void delete(String username, int questionId) {

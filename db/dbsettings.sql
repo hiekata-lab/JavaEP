@@ -18,6 +18,46 @@
 -- release_20141118のDBにカラムを追加するコマンド
 -- alter table questions add shown_in_exam tinyint(1) default 1;
 
+-- release_20150925のDBにカラムを追加するコマンド
+-- ALTER TABLE students_status ADD `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+-- ALTER TABLE students_status ADD `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- ALTER TABLE students_status_exam ADD `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP;
+-- ALTER TABLE students_status_exam ADD `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+-- CREATE TABLE `students_status_exam_log` (
+--   `username` varchar(50) NOT NULL,
+--   `question_id` smallint(3) unsigned NOT NULL,
+--   `source` text,
+--   `passed` tinyint(1) NOT NULL,
+--   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   KEY `question_id` (`question_id`),
+--   CONSTRAINT `students_status_exam_log_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- CREATE TABLE `students_status_log` (
+--   `username` varchar(50) NOT NULL,
+--   `question_id` smallint(3) unsigned NOT NULL,
+--   `source` text,
+--   `passed` tinyint(1) NOT NULL,
+--   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+--   KEY `question_id` (`question_id`),
+--   CONSTRAINT `students_status_log_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- release_20151001のDBにカラムを追加するコマンド
+-- ALTER TABLE `students_status` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status_log` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status_exam` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status_exam_log` ADD `result` TEXT AFTER `source`;
+-- ALTER TABLE `students_status` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status_log` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status_exam` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status_exam_log` ADD `action` varchar(11) DEFAULT NULL AFTER `result`;
+-- ALTER TABLE `students_status` ADD INDEX `action`(`action`);
+-- ALTER TABLE `students_status_log` ADD INDEX `action`(`action`);
+-- ALTER TABLE `students_status_exam` ADD INDEX `action`(`action`);
+-- ALTER TABLE `students_status_exam_log` ADD INDEX `action`(`action`);
+
+
+
 drop database if exists javaep;
 
 create database javaep;
@@ -42,37 +82,75 @@ create table authorities (
 );
 
 create table questions (
-	id smallint(3) unsigned not null auto_increment,
-	difficulty tinyint unsigned not null,
-	content text not null,
-	args text not null,
-	answers text not null,
-	source text not null,
-	object_oriented tinyint(1) default 0,
-	class_name varchar(64) default null,
-	shown_in_exam tinyint(1) default 1,
-	primary key (id)
+    id smallint(3) unsigned not null auto_increment,
+    difficulty tinyint unsigned not null,
+    content text not null,
+    args text not null,
+    answers text not null,
+    source text not null,
+    object_oriented tinyint(1) default 0,
+    class_name varchar(64) default null,
+    shown_in_exam tinyint(1) default 1,
+    primary key (id)
 );
 
-create table students_status (
-	username varchar(50) not null,
-	question_id smallint(3) unsigned not null,
-	source text,
-	passed tinyint(1) not null,
-	primary key (username, question_id),
-	foreign key (username) references users (username),
-	foreign key (question_id) references questions (id)
-);
+CREATE TABLE `students_status` (
+  `username` varchar(50) NOT NULL,
+  `question_id` smallint(3) unsigned NOT NULL,
+  `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
+  `passed` tinyint(1) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`username`,`question_id`),
+  KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
+  CONSTRAINT `students_status_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`),
+  CONSTRAINT `students_status_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-create table students_status_exam (
-	username varchar(50) not null,
-	question_id smallint(3) unsigned not null,
-	source text,
-	passed tinyint(1) not null,
-	primary key (username, question_id),
-	foreign key (username) references users (username),
-	foreign key (question_id) references questions (id)
-);
+CREATE TABLE `students_status_exam` (
+  `username` varchar(50) NOT NULL,
+  `question_id` smallint(3) unsigned NOT NULL,
+  `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
+  `passed` tinyint(1) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`username`,`question_id`),
+  KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
+  CONSTRAINT `students_status_exam_ibfk_1` FOREIGN KEY (`username`) REFERENCES `users` (`username`),
+  CONSTRAINT `students_status_exam_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `students_status_log` (
+  `username` varchar(50) NOT NULL,
+  `question_id` smallint(3) unsigned NOT NULL,
+  `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
+  `passed` tinyint(1) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
+  CONSTRAINT `students_status_log_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `students_status_exam_log` (
+  `username` varchar(50) NOT NULL,
+  `question_id` smallint(3) unsigned NOT NULL,
+  `source` text,
+  `result` text,
+  `action` varchar(11) DEFAULT NULL,
+  `passed` tinyint(1) NOT NULL,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY `question_id` (`question_id`),
+  KEY `action` (`action`),
+  CONSTRAINT `students_status_exam_log_ibfk_2` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 create table qandas (
     id int unsigned not null auto_increment,
