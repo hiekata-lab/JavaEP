@@ -58,3 +58,7 @@ src/main/resources/javaep.propertiesよりjavaep.logdir, lavaep.tmpdirを設定�
 [JavaEP](http://localhost:8080/JavaEP/)にアクセスしてログイン。
 - ID: admin
 - PW: admin
+
+### 設定ファイルの変更を無視する
+
+git update-index --skip-worktree src/main/resources/javaep.properties
