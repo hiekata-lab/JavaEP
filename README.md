@@ -61,4 +61,6 @@ src/main/resources/javaep.propertiesよりjavaep.logdir, lavaep.tmpdirを設定�
 
 ### 設定ファイルの変更を無視する
 
+```
 git update-index --skip-worktree src/main/resources/javaep.properties
+```
