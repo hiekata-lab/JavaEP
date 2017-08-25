@@ -11,7 +11,7 @@
 	</appender>
 	
 	<appender name="file" class="org.apache.log4j.RollingFileAppender">
-  		<param name="File" value="c:/kashiwade/logs/kashiwade.log" />
+  		<param name="File" value="./javaep.log" />
   		<param name="MaxFileSize" value="1024KB" />
   		<param name="MaxBackupIndex" value="10" />
   		<param name="Append" value="true" />
