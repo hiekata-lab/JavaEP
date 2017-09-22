@@ -13,6 +13,7 @@ public class UserListRowMapper implements RowMapper<UserListRow> {
 		userListRow.setUsername(rs.getString("username"));
 		userListRow.setAuthority(rs.getString("authority"));
 		userListRow.setScore(rs.getInt("score"));
+		userListRow.setExamScore(rs.getInt("exam_score"));
 		return userListRow;
 	}
 }
