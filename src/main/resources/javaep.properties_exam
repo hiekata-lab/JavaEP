@@ -1,0 +1,12 @@
+javaep.logdir=/home/wanaka/JavaEP/logs
+javaep.tmpdir=/home/wanaka/JavaEP/tmp
+
+# if mode = exam, this application runs in examination mode
+# you have to forbid access to Q&A page
+# look at security.xml
+javaep.mode=exam
+
+jdbc.driverClassName=com.mysql.jdbc.Driver
+jdbc.url.resource=jdbc:mysql://localhost/javaep
+jdbc.username=javaep
+jdbc.password=javaep
