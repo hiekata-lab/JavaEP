@@ -12,11 +12,16 @@ fi
 readonly CLASS_FILE="./src/main/resources/javaep.properties_class"
 readonly EXAM_FILE="./src/main/resources/javaep.properties_exam"
 readonly SETTING_FILE="./src/main/resources/javaep.properties"
+readonly SECURITY_FILE="./src/main/webapp/WEB-INF/spring/security.xml"
 
 if diff -q $CLASS_FILE $SETTING_FILE >/dev/null ; then
+  echo "MODE SWITCH Exam mode"
   cp $EXAM_FILE $SETTING_FILE
+  cp ${SECURITY_FILE}_exam $SECURITY_FILE
 else
+  echo "MODE SWITCH Class mode"
   cp $CLASS_FILE $SETTING_FILE
+  cp ${SECURITY_FILE}_class $SECURITY_FILE
 fi
 
 mvn package
