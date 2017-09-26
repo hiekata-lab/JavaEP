@@ -91,19 +91,23 @@
 					</div>
 				</div>
   			</div>
+  			<div class="col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<div class="caption">
+						<h3>既存の問題の編集</h3>
+						<p> <label>問題番号：</label>
+							<input type="text" class="form-control" id="questionNum">
+							<br>
+							<button type="button" class="btn btn-primary" onclick="editQuestion()">編集</button>
+						</p>
+					</div>
+				</div>
+  			</div>
 			<div class="col-sm-6 col-md-4">
 				<div class="thumbnail">
 					<div class="caption">
 						<h3>ユーザ一覧</h3>
 						<p><a href="admin/users" class="btn btn-primary">表示</a></p>
-					</div>
-				</div>
-  			</div>
-  			<div class="col-sm-6 col-md-4">
-				<div class="thumbnail">
-					<div class="caption">
-						<h3>テスト結果のダウンロード</h3>
-						<p><a href="admin/exportExamScore" class="btn btn-primary">ダウンロード</a></p>
 					</div>
 				</div>
   			</div>
@@ -119,6 +123,14 @@
 							&nbsp;
 							<button type="button" class="btn btn-danger auto_mark_buttons" onclick="calcExamScore()">テスト点数再計算</button>
 						</p>
+					</div>
+				</div>
+  			</div>
+  			<div class="col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<div class="caption">
+						<h3>テスト結果のダウンロード</h3>
+						<p><a href="admin/exportExamScore" class="btn btn-primary">ダウンロード</a></p>
 					</div>
 				</div>
   			</div>
@@ -194,6 +206,10 @@
 			}
 		});
 	};
+	function editQuestion(){
+		var questionId = $("#questionNum").val();
+		window.location.href='question/edit?questionId='+questionId;
+	}
 	
 	// 自動採点
 	function markAll(){
