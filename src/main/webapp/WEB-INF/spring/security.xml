@@ -10,9 +10,8 @@
 
 	<http auto-config="true">
 		<!-- if mode = exam, you have to add the following 2 line -->
-		<!-- <intercept-url pattern="/qanda/**" access="ROLE_ADMIN" />
-		<intercept-url pattern="/setting/**" access="ROLE_ADMIN" /> -->
-		
+		<intercept-url pattern="/qanda/**" access="ROLE_ADMIN" />
+		<intercept-url pattern="/setting/**" access="ROLE_ADMIN" />
 		<intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
 		<intercept-url pattern="/question/edit*" access="ROLE_ADMIN" />
 		<intercept-url pattern="/**" access="ROLE_ADMIN, ROLE_USER" />

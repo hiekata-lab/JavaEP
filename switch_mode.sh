@@ -15,8 +15,6 @@ if [ $? -eq 0 ]; then
   git fetch
   current_rev=`git rev-parse HEAD`
   remote_rev=`git rev-parse origin/HEAD` 
-  echo $current_rev
-  echo $remote_rev
   if [ ${current_rev} = ${remote_rev} ]; then
     echo 'Your repository is the latest'
   else
