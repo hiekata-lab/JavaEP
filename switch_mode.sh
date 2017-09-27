@@ -9,6 +9,22 @@ else
   exit 0
 fi
 
+which mvn > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+  echo 'Checking update ....'
+  git fetch
+  current_rev='git rev-parse HEAD'
+  remote_rev='git rev-parse origin/HEAD' 
+  if [ ${current_rev} -eq ${remote_rev}]; then
+    echo 'Your repository is the latest'
+  else
+    echo -e '\033[31m[WARNING]:Your repository is already out of date. Please git pull and update.\033[m'
+  fi
+else
+  echo "Git is not installed"
+  exit 0
+fi
+
 readonly CLASS_FILE="./src/main/resources/javaep.properties_class"
 readonly EXAM_FILE="./src/main/resources/javaep.properties_exam"
 readonly SETTING_FILE="./src/main/resources/javaep.properties"
