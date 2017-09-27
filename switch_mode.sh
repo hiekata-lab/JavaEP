@@ -13,9 +13,11 @@ which mvn > /dev/null 2>&1
 if [ $? -eq 0 ]; then
   echo 'Checking update ....'
   git fetch
-  current_rev='git rev-parse HEAD'
-  remote_rev='git rev-parse origin/HEAD' 
-  if [ ${current_rev} -eq ${remote_rev}]; then
+  current_rev=`git rev-parse HEAD`
+  remote_rev=`git rev-parse origin/HEAD` 
+  echo $current_rev
+  echo $remote_rev
+  if [ ${current_rev} = ${remote_rev} ]; then
     echo 'Your repository is the latest'
   else
     echo -e '\033[31m[WARNING]:Your repository is already out of date. Please git pull and update.\033[m'
