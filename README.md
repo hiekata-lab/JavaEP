@@ -63,4 +63,5 @@ src/main/resources/javaep.propertiesよりjavaep.logdir, lavaep.tmpdirを設定�
 
 ```
 git update-index --skip-worktree src/main/resources/javaep.properties
+git update-index --skip-worktree src/main/webapp/WEB-INF/spring/security.xml
 ```
