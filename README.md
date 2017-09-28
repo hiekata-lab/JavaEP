@@ -45,7 +45,7 @@ mysql -u [user] -p < db/dbsetting.sql
 
 ### logdir, tmpdirの設定
 
-src/main/resources/javaep.propertiesよりjavaep.logdir, lavaep.tmpdirを設定する。
+src/main/resources/javaep.properties,javaep.propertoes_class, javaep.properties_examよりjavaep.logdir, javaep.tmpdirを設定する。
 
 設定したディレクトリを作成する。
 
@@ -62,6 +62,6 @@ src/main/resources/javaep.propertiesよりjavaep.logdir, lavaep.tmpdirを設定�
 ### 設定ファイルの変更を無視する
 
 ```
-git update-index --skip-worktree src/main/resources/javaep.properties
-git update-index --skip-worktree src/main/webapp/WEB-INF/spring/security.xml
+git update-index --skip-worktree src/main/resources/javaep.properties*
+git update-index --skip-worktree src/main/webapp/WEB-INF/spring/security.xml*
 ```
