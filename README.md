@@ -65,3 +65,11 @@ src/main/resources/javaep.properties,javaep.propertoes_class, javaep.properties_
 git update-index --skip-worktree src/main/resources/javaep.properties*
 git update-index --skip-worktree src/main/webapp/WEB-INF/spring/security.xml*
 ```
+
+### Apache + Tomcatでデプロイする
+EclipseからWarファイルとして出力
+プロジェクトを右クリック -> [Export] -> [WAR file]  
+出力したWarファイルをTomcatのwebapps以下に配置  
+ApacheへのリクエストがTomcatへのリクエストに切り替わる用設定  
+詳しくは「Apache Tomcat 連携」で検索してみてください。  
+
